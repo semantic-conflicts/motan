@@ -1,1 +1,26 @@
+
+sudo: required
 language: java
+
+jdk:
+  - openjdk8
+
+script:
+  - mvn package -DskipTests
+
+before_deploy:
+    - mkdir MiningBuild
+    - find . -name '*.jar' -exec cp {} ./MiningBuild \;
+    - cd /home/travis/build/semantic-conflicts/motan/MiningBuild
+    - tar -zcvf result.tar.gz *
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: result.tar.gz
+  name: fetchjar-transformed-ff6d3e9
+  file_glob: true
+  overwrite: false
+  skip_cleanup: true
+  on:
+    all_branches: true 
+            
